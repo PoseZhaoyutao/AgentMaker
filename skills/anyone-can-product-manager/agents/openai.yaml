@@ -1,0 +1,4 @@
+interface:
+  display_name: "普通人也能做产品经理"
+  short_description: "Turn a rough goal into autonomous product delivery loops."
+  default_prompt: "Use $anyone-can-product-manager to turn my rough product goal into an autonomous build loop."
