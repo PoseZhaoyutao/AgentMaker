@@ -1,35 +1,37 @@
 ---
 name: anyone-can-product-manager
-description: Use when a user wants an AI team to turn a rough product idea, app goal, feature request, or project outcome into an autonomous product-management and delivery loop with minimal human input.
+description: Use when a user wants an AI team to turn a rough product idea, app goal, feature request, or project outcome into an autonomous product-management and delivery loop after required human input for design direction and constraint boundaries.
 ---
 
 # Anyone Can Product Manager
 
 ## Overview
 
-Use this skill to make the agent act as an autonomous product team: the human gives a rough goal, the Main Agent turns it into a product target and guardrails, and Subagents design, constrain, build, verify, and revise until there is a usable deliverable.
+Use this skill to make the agent act as an autonomous product team: the human gives a rough goal, required design direction, and required constraint boundaries; the Main Agent turns them into a product target and guardrails; Subagents design, constrain, build, verify, and revise until there is a usable deliverable.
 
-Core rule: do not make the human become the project manager. Ask only for goal-critical boundaries, then own the loop.
+Core rule: do not make the human become the project manager, but never invent the human's design direction or hard constraints. Get those two inputs explicitly, then own the loop.
 
 ## Start Protocol
 
 1. Restate the user's rough goal as a product outcome.
-2. Ask at most 3 short questions only when the answer changes the target, risk, or deliverable.
-3. Prefer selectable defaults: "I will assume X unless you say otherwise."
-4. Convert answers into a Product Charter before doing work.
+2. Ask for mandatory human input: Design Direction and Constraint Boundary.
+3. Ask at most 1 additional short question only when the answer changes the target, risk, or deliverable.
+4. Convert the human inputs into a Product Charter before doing work.
 5. After the charter is set, stop asking for routine approvals.
 
-The first question round is not an approval gate. After the user answers, or after safe defaults are declared, immediately create the charter, split work, and start the autonomous loop.
+The first question round is not an approval gate; it is a required boundary intake. After the user provides Design Direction and Constraint Boundary, immediately create the charter, split work, and start the autonomous loop.
+
+Do not default, infer, or silently choose Design Direction or Constraint Boundary. If either is missing, ask again in the shortest possible form and wait.
 
 Good first questions:
 
 | Need | Short question |
 | --- | --- |
-| Audience | "Who is this for?" |
-| Deliverable | "Should the output be a Skill, app, doc, deck, or repo change?" |
-| Boundary | "Any hard no-go areas: cost, style, tools, data, publishing?" |
+| Design Direction | "What design direction do you want: fastest MVP, polished demo, playful, serious, technical, visual, or another style?" |
+| Constraint Boundary | "What must I not cross: cost, tools, data, platform, style, time, privacy, publishing, safety?" |
+| Optional Target | "Who is this for, if not obvious?" |
 
-If answers are missing, choose conservative defaults and continue.
+Only the optional target may use a conservative default. Design Direction and Constraint Boundary must be human-provided.
 
 ## Product Charter
 
@@ -38,6 +40,8 @@ Create and keep this charter visible during the work:
 | Field | Meaning |
 | --- | --- |
 | Goal | The outcome the user actually wants, not only the first wording |
+| Design direction | Human-provided product shape, tone, style, or experience target |
+| Constraint boundary | Human-provided no-go lines for scope, tools, cost, data, time, privacy, publishing, safety, or style |
 | User | Who benefits and what they can do afterward |
 | Deliverable | Files, app behavior, documentation, tests, or other artifacts to produce |
 | Success checks | Observable acceptance criteria and verification commands |
@@ -102,6 +106,8 @@ When delegating, give each Subagent a bounded task:
 ```text
 You are the [role]. Product charter:
 - Goal:
+- Design direction:
+- Constraint boundary:
 - Deliverable:
 - Hard constraints:
 - Success checks:
@@ -122,12 +128,14 @@ Use the fewest words that preserve agency:
 
 | Situation | Say |
 | --- | --- |
+| Need design direction | "Give the design direction first: MVP, polished demo, playful, serious, technical, visual, or your own phrase." |
+| Need constraint boundary | "Now give the boundaries I must not cross: cost, tools, data, platform, style, time, privacy, publishing, safety." |
 | Need one boundary | "Choose: fastest, polished, cheapest, or strictest?" |
 | Default is safe | "I will assume local-only and no paid services." |
 | Risk appears | "This needs approval because it publishes externally." |
 | Work is ongoing | "I found a gap and am revising it." |
 
-Avoid approval loops such as "Should I continue?", "Do you want me to implement?", or "Please confirm each step." Once the human approves the direction, continue to completion.
+Avoid approval loops such as "Should I continue?", "Do you want me to implement?", or "Please confirm each step." Once the human provides the required design direction and constraint boundary, continue to completion.
 
 After the first boundary pass, never ask "may I start?" The start has already happened.
 
@@ -137,6 +145,7 @@ Stop only when one is true:
 
 - The charter's success checks pass with evidence.
 - A required human escalation blocks progress.
+- Design Direction or Constraint Boundary is missing after a direct request.
 - The environment prevents further work after reasonable alternatives have been tried.
 
 Do not stop because a draft exists, a plan sounds good, one Subagent finished, or the first implementation almost works.
@@ -146,6 +155,7 @@ Do not stop because a draft exists, a plan sounds good, one Subagent finished, o
 | Mistake | Correction |
 | --- | --- |
 | Asking the user to be PM | Convert ambiguity into defaults and constraints |
+| Guessing design direction or constraints | Ask for both explicitly and wait |
 | Writing only a plan | Produce the requested artifact or implementation |
 | Waiting for routine approval | Continue inside the autonomy boundary |
 | Letting Subagents drift | Review every result against the charter |

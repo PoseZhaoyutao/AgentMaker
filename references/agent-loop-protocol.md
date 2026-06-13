@@ -25,6 +25,8 @@ Before each loop, compress history into:
 
 ```text
 Goal:
+Design direction:
+Constraint boundary:
 Decisions:
 Assumptions:
 Open blockers:
@@ -40,12 +42,14 @@ Use the compressed state for future prompts. Do not paste long prior discussion 
 Before each delegation round, the Main Agent checks:
 
 1. The goal is still phrased as an outcome.
-2. Success checks are observable.
-3. Constraints are hard enough to prevent unsafe autonomy.
-4. Subagent tasks do not overlap destructively.
-5. Token mode fits the risk: concise for routine work, expansive for ambiguity or high risk.
+2. Design direction was provided by the human, not inferred.
+3. Constraint boundary was provided by the human, not inferred.
+4. Success checks are observable.
+5. Constraints are hard enough to prevent unsafe autonomy.
+6. Subagent tasks do not overlap destructively.
+7. Token mode fits the risk: concise for routine work, expansive for ambiguity or high risk.
 
-If the charter is vague, improve it. Do not ask the user unless the ambiguity changes a hard boundary.
+If the charter is vague, improve it. If Design Direction or Constraint Boundary is missing, stop and ask the human for that exact field before delegating.
 
 ## Subagent Review Rubric
 
@@ -101,6 +105,7 @@ Do not broaden scope during revision unless the current approach cannot satisfy 
 
 Ask the human only when:
 
+- Design Direction or Constraint Boundary has not been provided.
 - Two or more required goals conflict.
 - The next action is destructive, irreversible, external, paid, credentialed, legally sensitive, or outside available permissions.
 - The target user, deliverable, or hard boundary cannot be inferred safely.
