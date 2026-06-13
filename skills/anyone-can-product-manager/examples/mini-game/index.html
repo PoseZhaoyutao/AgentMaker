@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spark Courier Demo</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f8f4e8;
+      --muted: #b8b0a0;
+      --panel: rgba(18, 22, 27, 0.78);
+      --panel-strong: rgba(9, 12, 17, 0.92);
+      --line: rgba(255, 255, 255, 0.16);
+      --amber: #ffcc4d;
+      --cyan: #60f5ff;
+      --coral: #ff6d5a;
+      --green: #9cff9c;
+      --space: #07080c;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(96, 245, 255, 0.28), transparent 28%),
+        radial-gradient(circle at 82% 22%, rgba(255, 204, 77, 0.22), transparent 24%),
+        linear-gradient(135deg, #07080c 0%, #151923 42%, #0b1015 100%);
+      color: var(--ink);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(560px, 1fr) 380px;
+      gap: 22px;
+      height: 100vh;
+      padding: 28px;
+    }
+
+    .game-shell {
+      position: relative;
+      min-height: 620px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 50%),
+        var(--space);
+      background-size: 42px 42px, 42px 42px, auto, auto;
+      border-radius: 8px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+      overflow: hidden;
+    }
+
+    .game-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(120deg, transparent 0 36%, rgba(255, 255, 255, 0.08) 37%, transparent 44%),
+        radial-gradient(circle at 50% 52%, transparent 0 33%, rgba(96, 245, 255, 0.13) 34%, transparent 36%);
+      mix-blend-mode: screen;
+    }
+
+    .hud {
+      position: absolute;
+      z-index: 3;
+      top: 18px;
+      left: 18px;
+      right: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 2px;
+    }
+
+    .eyebrow {
+      color: var(--cyan);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+    }
+
+    .stat {
+      min-width: 92px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    .stat span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--ink);
+      font-size: 20px;
+    }
+
+    canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .brief {
+      position: absolute;
+      z-index: 3;
+      left: 24px;
+      bottom: 24px;
+      width: min(520px, calc(100% - 48px));
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(7, 8, 12, 0.74);
+      backdrop-filter: blur(16px);
+    }
+
+    .brief p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .brief b {
+      color: var(--ink);
+    }
+
+    .side {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(18px);
+    }
+
+    .panel header {
+      padding: 16px 18px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .panel .content {
+      padding: 16px 18px 18px;
+    }
+
+    .charter {
+      display: grid;
+      gap: 12px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 12px;
+      align-items: start;
+      font-size: 14px;
+    }
+
+    .row span {
+      color: var(--cyan);
+      font-weight: 700;
+    }
+
+    .row p {
+      margin: 0;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+
+    .agents {
+      display: grid;
+      gap: 10px;
+    }
+
+    .agent {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .badge {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--panel-strong);
+      color: var(--amber);
+      font-weight: 800;
+    }
+
+    .agent strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .agent small {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .status {
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .loop {
+      padding: 16px 18px;
+      background: rgba(0, 0, 0, 0.36);
+    }
+
+    .loop-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .chip {
+      padding: 7px 9px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .arrow {
+      color: var(--cyan);
+    }
+
+    @media (max-width: 900px) {
+      body {
+        overflow: auto;
+      }
+
+      .stage {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .game-shell {
+        min-height: 560px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="game-shell" aria-label="Spark Courier playable demo">
+      <div class="hud">
+        <div class="brand">
+          <div class="eyebrow">demo generated from one rough goal</div>
+          <h1>Spark Courier</h1>
+        </div>
+        <div class="stats" aria-label="Game stats">
+          <div class="stat"><span>score</span><strong id="score">0</strong></div>
+          <div class="stat"><span>time</span><strong id="time">60</strong></div>
+          <div class="stat"><span>state</span><strong id="state">RUN</strong></div>
+        </div>
+      </div>
+      <canvas id="game" width="1080" height="720"></canvas>
+      <div class="brief">
+        <p><b>Goal:</b> build a tiny browser game. Move with WASD or arrows, collect sparks, avoid drones, beat the timer. The UI shows how the Skill turns a vague idea into charter, roles, checks, and a shippable artifact.</p>
+      </div>
+    </section>
+
+    <aside class="side">
+      <section class="panel">
+        <header>
+          <div class="eyebrow">product charter</div>
+          <h2>From vague request to playable surface</h2>
+        </header>
+        <div class="content charter">
+          <div class="row"><span>User</span><p>Casual player, zero onboarding.</p></div>
+          <div class="row"><span>Loop</span><p>Move, collect sparks, avoid drones, chase score.</p></div>
+          <div class="row"><span>Checks</span><p>Loads locally, controls respond, score and timer update, win/loss states exist.</p></div>
+          <div class="row"><span>Budget</span><p>One HTML file, no dependencies, screenshot-ready.</p></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <header>
+          <div class="eyebrow">subagent split</div>
+          <h2>Small roles, one source of truth</h2>
+        </header>
+        <div class="content agents">
+          <div class="agent"><div class="badge">M</div><div><strong>Main</strong><small>Charter and review</small></div><div class="status">own</div></div>
+          <div class="agent"><div class="badge">S</div><div><strong>Scout</strong><small>Audience and use case</small></div><div class="status">pass</div></div>
+          <div class="agent"><div class="badge">D</div><div><strong>Design</strong><small>Rules and visual surface</small></div><div class="status">pass</div></div>
+          <div class="agent"><div class="badge">B</div><div><strong>Builder</strong><small>HTML, CSS, game loop</small></div><div class="status">pass</div></div>
+          <div class="agent"><div class="badge">V</div><div><strong>Verify</strong><small>Smoke test and screenshot</small></div><div class="status">pass</div></div>
+        </div>
+      </section>
+
+      <section class="panel loop">
+        <div class="loop-line" aria-label="Autonomous product loop">
+          <span class="chip">Goal</span><span class="arrow">-></span>
+          <span class="chip">Charter</span><span class="arrow">-></span>
+          <span class="chip">Build</span><span class="arrow">-></span>
+          <span class="chip">Verify</span>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <script>
+    const canvas = document.getElementById("game");
+    const ctx = canvas.getContext("2d");
+    const scoreEl = document.getElementById("score");
+    const timeEl = document.getElementById("time");
+    const stateEl = document.getElementById("state");
+
+    const keys = new Set();
+    const player = { x: 170, y: 360, r: 18, vx: 0, vy: 0 };
+    const sparks = [
+      { x: 340, y: 180, r: 9 },
+      { x: 520, y: 520, r: 9 },
+      { x: 740, y: 240, r: 9 },
+      { x: 870, y: 470, r: 9 }
+    ];
+    const drones = [
+      { x: 450, y: 350, r: 24, a: 0, speed: 0.018 },
+      { x: 760, y: 375, r: 24, a: 2, speed: 0.014 }
+    ];
+    let score = 0;
+    let start = performance.now();
+
+    window.addEventListener("keydown", event => keys.add(event.key.toLowerCase()));
+    window.addEventListener("keyup", event => keys.delete(event.key.toLowerCase()));
+
+    function circle(x, y, r, fill, stroke) {
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = fill;
+      ctx.fill();
+      if (stroke) {
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = stroke;
+        ctx.stroke();
+      }
+    }
+
+    function tick(now) {
+      const elapsed = Math.floor((now - start) / 1000);
+      const remaining = Math.max(0, 60 - elapsed);
+      const ax = (keys.has("arrowright") || keys.has("d") ? 1 : 0) - (keys.has("arrowleft") || keys.has("a") ? 1 : 0);
+      const ay = (keys.has("arrowdown") || keys.has("s") ? 1 : 0) - (keys.has("arrowup") || keys.has("w") ? 1 : 0);
+
+      player.vx = player.vx * 0.84 + ax * 0.9;
+      player.vy = player.vy * 0.84 + ay * 0.9;
+      player.x = Math.max(36, Math.min(canvas.width - 36, player.x + player.vx));
+      player.y = Math.max(96, Math.min(canvas.height - 54, player.y + player.vy));
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.strokeStyle = "rgba(96,245,255,.18)";
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 7; i++) {
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, 90 + i * 56, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      sparks.forEach((spark, index) => {
+        if (!spark.hit) {
+          const pulse = 1 + Math.sin(now / 220 + index) * 0.18;
+          circle(spark.x, spark.y, spark.r * pulse, "rgba(255,204,77,.95)", "rgba(255,255,255,.55)");
+          if (Math.hypot(player.x - spark.x, player.y - spark.y) < player.r + spark.r) {
+            spark.hit = true;
+            score += 25;
+          }
+        }
+      });
+
+      drones.forEach((drone, index) => {
+        drone.a += drone.speed;
+        const x = drone.x + Math.cos(drone.a) * 58;
+        const y = drone.y + Math.sin(drone.a * 1.4) * 42;
+        circle(x, y, drone.r, "rgba(255,109,90,.85)", "rgba(255,255,255,.25)");
+        ctx.fillStyle = "rgba(0,0,0,.45)";
+        ctx.fillRect(x - 10, y - 3, 20, 6);
+        if (Math.hypot(player.x - x, player.y - y) < player.r + drone.r) {
+          score = Math.max(0, score - 1);
+        }
+      });
+
+      circle(player.x, player.y, player.r + 8, "rgba(96,245,255,.16)");
+      circle(player.x, player.y, player.r, "rgba(96,245,255,.92)", "rgba(255,255,255,.75)");
+      ctx.fillStyle = "rgba(7,8,12,.85)";
+      ctx.beginPath();
+      ctx.moveTo(player.x + 12, player.y);
+      ctx.lineTo(player.x - 8, player.y - 8);
+      ctx.lineTo(player.x - 4, player.y);
+      ctx.lineTo(player.x - 8, player.y + 8);
+      ctx.closePath();
+      ctx.fill();
+
+      const allCollected = sparks.every(spark => spark.hit);
+      scoreEl.textContent = String(score);
+      timeEl.textContent = String(remaining);
+      stateEl.textContent = allCollected ? "WIN" : remaining === 0 ? "END" : "RUN";
+
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
+  </script>
+</body>
+</html>
