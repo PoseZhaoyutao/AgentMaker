@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>普通人也能做产品经理 · Anyone Can Product Manager</title>
+<style>
+  :root {
+    --bg: #07070c;
+    --bg-soft: #0d0d16;
+    --panel: rgba(255, 255, 255, 0.035);
+    --panel-strong: rgba(255, 255, 255, 0.06);
+    --border: rgba(255, 255, 255, 0.09);
+    --border-bright: rgba(255, 255, 255, 0.16);
+    --text: #f4f4fb;
+    --muted: #9aa0b5;
+    --faint: #6b7090;
+    --violet: #8b6cff;
+    --cyan: #46e8d6;
+    --amber: #ffb24c;
+    --pink: #ff6ba6;
+    --radius: 18px;
+    --maxw: 1080px;
+    --font: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.6;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- ambient background ---------- */
+  .aura {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .aura span {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.5;
+    animation: drift 22s ease-in-out infinite alternate;
+  }
+  .aura .a { width: 520px; height: 520px; background: #5b3cff; top: -160px; left: -120px; }
+  .aura .b { width: 460px; height: 460px; background: #0f8d86; top: 30%; right: -160px; animation-delay: -7s; }
+  .aura .c { width: 420px; height: 420px; background: #ff7a3c; bottom: -200px; left: 30%; opacity: 0.32; animation-delay: -13s; }
+  @keyframes drift {
+    from { transform: translate3d(0,0,0) scale(1); }
+    to   { transform: translate3d(40px,-30px,0) scale(1.12); }
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- hero ---------- */
+  header.hero { padding: 110px 0 70px; text-align: center; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; letter-spacing: 0.04em; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 7px 16px; background: var(--panel);
+    backdrop-filter: blur(8px);
+  }
+  .pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+
+  h1 {
+    font-size: clamp(38px, 7vw, 76px);
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 26px 0 8px;
+  }
+  .grad {
+    background: linear-gradient(110deg, var(--violet), var(--cyan) 45%, var(--amber));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub-en { font-size: 15px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--faint); margin-bottom: 22px; }
+  .lede { font-size: clamp(16px, 2.2vw, 20px); color: var(--muted); max-width: 640px; margin: 0 auto 18px; }
+
+  .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .btn {
+    font-family: var(--font); font-size: 15px; font-weight: 600; cursor: pointer;
+    padding: 13px 26px; border-radius: 12px; border: 1px solid transparent;
+    transition: transform .15s ease, box-shadow .25s ease, background .2s ease;
+    text-decoration: none; display: inline-block;
+  }
+  .btn-primary { color: #0a0a12; background: linear-gradient(110deg, var(--violet), var(--cyan)); box-shadow: 0 10px 30px -10px var(--violet); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -10px var(--violet); }
+  .btn-ghost { color: var(--text); border-color: var(--border-bright); background: var(--panel); }
+  .btn-ghost:hover { background: var(--panel-strong); transform: translateY(-2px); }
+
+  /* ---------- steering metaphor ---------- */
+  .inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 720px; margin: 56px auto 0; }
+  @media (max-width: 620px){ .inputs { grid-template-columns: 1fr; } }
+  .input-card {
+    text-align: left; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px; background: var(--panel); backdrop-filter: blur(8px);
+  }
+  .input-card .emoji { font-size: 26px; }
+  .input-card h3 { font-size: 17px; margin: 10px 0 6px; }
+  .input-card p { font-size: 14px; color: var(--muted); }
+  .input-card .tag { font-size: 12px; color: var(--cyan); letter-spacing: 0.08em; }
+
+  /* ---------- sections ---------- */
+  section { padding: 78px 0; }
+  .eyebrow { font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--violet); font-weight: 700; }
+  .sec-title { font-size: clamp(26px, 4vw, 40px); font-weight: 800; letter-spacing: -0.01em; margin: 10px 0 14px; }
+  .sec-desc { color: var(--muted); max-width: 600px; font-size: 16px; }
+
+  /* reveal */
+  .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* ---------- before / after ---------- */
+  .flow { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 40px; }
+  @media (max-width: 760px){ .flow { grid-template-columns: 1fr; } }
+  .flow-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; background: var(--panel); }
+  .flow-card.bad { border-color: rgba(255,107,166,0.25); }
+  .flow-card.good { border-color: rgba(70,232,214,0.28); background: linear-gradient(180deg, rgba(70,232,214,0.05), transparent); }
+  .flow-card h4 { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; color: var(--muted); }
+  .flow-step { display: flex; align-items: center; gap: 10px; font-size: 14px; padding: 8px 0; color: var(--text); }
+  .flow-step .n { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; flex: none; }
+  .bad .n { background: rgba(255,107,166,0.16); color: var(--pink); }
+  .good .n { background: rgba(70,232,214,0.16); color: var(--cyan); }
+  .flow-step.muted { color: var(--faint); }
+
+  /* ---------- charter generator ---------- */
+  .studio { border: 1px solid var(--border-bright); border-radius: 24px; padding: 30px; background: linear-gradient(180deg, var(--panel-strong), rgba(255,255,255,0.01)); margin-top: 40px; }
+  .studio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+  @media (max-width: 860px){ .studio-grid { grid-template-columns: 1fr; } }
+  label.field { display: block; font-size: 13px; color: var(--muted); margin: 0 0 9px; letter-spacing: 0.03em; }
+  textarea {
+    width: 100%; min-height: 78px; resize: vertical; font-family: var(--font); font-size: 15px;
+    color: var(--text); background: rgba(0,0,0,0.35); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px;
+  }
+  textarea:focus { outline: none; border-color: var(--violet); box-shadow: 0 0 0 3px rgba(139,108,255,0.18); }
+  .chips { display: flex; flex-wrap: wrap; gap: 9px; margin: 4px 0 22px; }
+  .chip {
+    font-family: var(--font); font-size: 13.5px; cursor: pointer; user-select: none;
+    padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border-bright);
+    background: var(--panel); color: var(--muted); transition: all .16s ease;
+  }
+  .chip:hover { color: var(--text); border-color: var(--violet); }
+  .chip.on { color: #0a0a12; background: linear-gradient(110deg, var(--violet), var(--cyan)); border-color: transparent; font-weight: 600; }
+
+  .gen-btn { width: 100%; margin-top: 6px; }
+
+  /* charter card output */
+  .charter { border: 1px solid var(--border); border-radius: 16px; background: rgba(0,0,0,0.3); overflow: hidden; min-height: 100%; }
+  .charter-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .charter-head .badge { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cyan); }
+  .charter-head .title { font-size: 15px; font-weight: 700; }
+  .charter-body { padding: 6px 20px 18px; }
+  .crow { padding: 13px 0; border-bottom: 1px dashed var(--border); }
+  .crow:last-child { border-bottom: none; }
+  .crow .k { font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); }
+  .crow .v { font-size: 14.5px; color: var(--text); margin-top: 4px; }
+  .crow .v.empty { color: var(--faint); font-style: italic; }
+  .placeholder-note { padding: 40px 20px; text-align: center; color: var(--faint); font-size: 14px; }
+
+  /* loop run inside charter */
+  .loop-run { display: flex; flex-wrap: wrap; gap: 7px; padding: 14px 20px 20px; }
+  .loop-node {
+    font-size: 12px; padding: 6px 11px; border-radius: 8px; border: 1px solid var(--border);
+    color: var(--faint); background: var(--panel); transition: all .3s ease;
+  }
+  .loop-node.lit { color: #0a0a12; background: linear-gradient(110deg, var(--cyan), var(--amber)); border-color: transparent; font-weight: 600; transform: translateY(-2px); }
+
+  /* ---------- loop diagram ---------- */
+  .loop-strip { display: flex; align-items: stretch; gap: 0; flex-wrap: wrap; margin-top: 40px; counter-reset: step; }
+  .loop-item { flex: 1 1 150px; position: relative; padding: 22px 18px; border: 1px solid var(--border); border-radius: 14px; margin: 6px; background: var(--panel); }
+  .loop-item .idx { font-size: 12px; color: var(--violet); font-weight: 700; }
+  .loop-item .nm { font-size: 16px; font-weight: 700; margin: 6px 0 4px; }
+  .loop-item .ds { font-size: 13px; color: var(--muted); }
+
+  /* ---------- roles / orchestration grids ---------- */
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
+  @media (max-width: 820px){ .grid3 { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 540px){ .grid3 { grid-template-columns: 1fr; } }
+  .card { border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; background: var(--panel); transition: transform .2s ease, border-color .2s ease; }
+  .card:hover { transform: translateY(-4px); border-color: var(--border-bright); }
+  .card .ic { font-size: 22px; }
+  .card h4 { font-size: 16px; margin: 12px 0 6px; }
+  .card p { font-size: 13.5px; color: var(--muted); }
+
+  .orch { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; margin-top: 40px; }
+  @media (max-width: 700px){ .orch { grid-template-columns: 1fr; } }
+  .orch-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); }
+  .orch-row .when { font-size: 14px; color: var(--text); flex: 1; }
+  .orch-row .arrow { color: var(--faint); }
+  .orch-row .tool { font-size: 13px; font-weight: 600; color: var(--cyan); }
+
+  /* ---------- footer ---------- */
+  footer { padding: 70px 0 90px; text-align: center; border-top: 1px solid var(--border); margin-top: 40px; }
+  .code-block { text-align: left; max-width: 620px; margin: 24px auto 0; background: rgba(0,0,0,0.4); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; font-family: "SF Mono", "Cascadia Code", Consolas, monospace; font-size: 13px; color: var(--cyan); overflow-x: auto; white-space: pre; }
+  .foot-note { color: var(--faint); font-size: 13px; margin-top: 26px; }
+</style>
+</head>
+<body>
+  <div class="aura"><span class="a"></span><span class="b"></span><span class="c"></span></div>
+
+  <header class="hero">
+    <div class="wrap">
+      <span class="pill"><span class="dot"></span> Claude Code Skill · 自主产品交付循环</span>
+      <h1>普通人也能<span class="grad">做产品经理</span></h1>
+      <div class="sub-en">Anyone Can Product Manager</div>
+      <p class="lede">你只给目标、设计方向和约束边界。剩下的拆解、设计、构建、验证和持续修正，交给一支自主运转的 AI 产品团队。</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#studio">试一试 Charter 生成器</a>
+        <a class="btn btn-ghost" href="#loop">看它怎么运转</a>
+      </div>
+
+      <div class="inputs">
+        <div class="input-card">
+          <div class="emoji">🎯</div>
+          <span class="tag">方向盘</span>
+          <h3>设计方向</h3>
+          <p>产品长成什么感觉、走什么路线、优先什么体验。由你定义，AI 不替你拍板。</p>
+        </div>
+        <div class="input-card">
+          <div class="emoji">🛡️</div>
+          <span class="tag">刹车</span>
+          <h3>约束边界</h3>
+          <p>哪些线不能越：成本、工具、数据、平台、时间、隐私、发布、安全。由你划定。</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- problem / solution -->
+  <section>
+    <div class="wrap reveal">
+      <div class="eyebrow">它解决什么</div>
+      <h2 class="sec-title">从「反复下指令」到「一次给定方向」</h2>
+      <p class="sec-desc">传统用法把人变成了项目经理：提需求、审批、补洞、再审批，结果还是半成品。这个技能反过来。</p>
+      <div class="flow">
+        <div class="flow-card bad">
+          <h4>过去 · 你在当 PM</h4>
+          <div class="flow-step"><span class="n">1</span> 人提需求</div>
+          <div class="flow-step"><span class="n">2</span> AI 输出</div>
+          <div class="flow-step"><span class="n">3</span> 人审批</div>
+          <div class="flow-step"><span class="n">4</span> 人补充</div>
+          <div class="flow-step"><span class="n">5</span> AI 再输出</div>
+          <div class="flow-step muted"><span class="n">…</span> 结果仍是半成品</div>
+        </div>
+        <div class="flow-card good">
+          <h4>现在 · AI 在当 PM</h4>
+          <div class="flow-step"><span class="n">1</span> 你给粗略目标</div>
+          <div class="flow-step"><span class="n">2</span> 你给设计方向 + 约束边界</div>
+          <div class="flow-step"><span class="n">3</span> 主 Agent 收敛成 Product Charter</div>
+          <div class="flow-step"><span class="n">4</span> 子 Agent 分工、构建、验证</div>
+          <div class="flow-step"><span class="n">5</span> 自动修正直到通过验收</div>
+          <div class="flow-step"><span class="n">✓</span> 可交付产物</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- interactive studio -->
+  <section id="studio">
+    <div class="wrap reveal">
+      <div class="eyebrow">动手试试</div>
+      <h2 class="sec-title">Charter 生成器</h2>
+      <p class="sec-desc">给一句粗略目标，选好方向和边界，看看技能如何把它收敛成一份产品宪章并启动自主循环。</p>
+
+      <div class="studio">
+        <div class="studio-grid">
+          <div>
+            <label class="field">① 你的粗略目标</label>
+            <textarea id="goal" placeholder="例：我想做一个浏览器小游戏，打开就能玩。"></textarea>
+
+            <label class="field" style="margin-top:18px;">② 设计方向（单选）</label>
+            <div class="chips" id="dir-chips">
+              <span class="chip" data-dir="最快 MVP">最快 MVP</span>
+              <span class="chip" data-dir="精致演示">精致演示</span>
+              <span class="chip" data-dir="好玩有张力">好玩有张力</span>
+              <span class="chip" data-dir="严肃专业">严肃专业</span>
+              <span class="chip" data-dir="技术感">技术感</span>
+              <span class="chip" data-dir="视觉化">视觉化</span>
+            </div>
+
+            <label class="field">③ 约束边界（可多选）</label>
+            <div class="chips" id="con-chips">
+              <span class="chip" data-con="本地单文件">本地单文件</span>
+              <span class="chip" data-con="不联网">不联网</span>
+              <span class="chip" data-con="不花钱">不花钱</span>
+              <span class="chip" data-con="无复杂依赖">无复杂依赖</span>
+              <span class="chip" data-con="不碰隐私数据">不碰隐私数据</span>
+              <span class="chip" data-con="中文优先">中文优先</span>
+            </div>
+
+            <button class="btn btn-primary gen-btn" id="genBtn">⚡ 生成 Product Charter</button>
+          </div>
+
+          <div>
+            <label class="field">产出 · Product Charter</label>
+            <div class="charter">
+              <div class="charter-head">
+                <span class="badge">CHARTER</span>
+                <span class="title" id="ch-title">等待输入…</span>
+              </div>
+              <div class="charter-body" id="ch-body">
+                <div class="placeholder-note">填好左侧三项，点击生成，<br>这里会出现一份完整的产品宪章。</div>
+              </div>
+              <div class="loop-run" id="ch-loop" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- autonomous loop -->
+  <section id="loop">
+    <div class="wrap reveal">
+      <div class="eyebrow">运转机制</div>
+      <h2 class="sec-title">自主交付循环</h2>
+      <p class="sec-desc">没达到目标，就不会因为「已经写了计划」或「差不多能用」而停下。</p>
+      <div class="loop-strip">
+        <div class="loop-item"><div class="idx">01</div><div class="nm">Charter</div><div class="ds">把目标、方向、约束收敛成产品宪章</div></div>
+        <div class="loop-item"><div class="idx">02</div><div class="nm">Split</div><div class="ds">按所有权拆给子 Agent</div></div>
+        <div class="loop-item"><div class="idx">03</div><div class="nm">Build</div><div class="ds">优先复用已装技能产出真实交付物</div></div>
+        <div class="loop-item"><div class="idx">04</div><div class="nm">Verify</div><div class="ds">用可观测的验收标准给出证据</div></div>
+        <div class="loop-item"><div class="idx">05</div><div class="nm">Revise</div><div class="ds">最小修正闭合差距，直到通过</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- roles -->
+  <section>
+    <div class="wrap reveal">
+      <div class="eyebrow">团队分工</div>
+      <h2 class="sec-title">六个角色，一个目标守门人</h2>
+      <div class="grid3">
+        <div class="card"><div class="ic">🧭</div><h4>Main Agent</h4><p>维护宪章、目标、约束与验收，做最终审查。不是转发员，是目标守门人。</p></div>
+        <div class="card"><div class="ic">🔭</div><h4>Product Scout</h4><p>补足用户场景、使用者、机会点和默认假设。</p></div>
+        <div class="card"><div class="ic">🎨</div><h4>Design Agent</h4><p>把设计方向变成体验结构、页面、功能与规则。</p></div>
+        <div class="card"><div class="ic">🛡️</div><h4>Constraint Agent</h4><p>把约束边界变成硬规则、风险列表和不能碰的线。</p></div>
+        <div class="card"><div class="ic">🔨</div><h4>Builder Agent</h4><p>产出文件与可运行成果，优先通过已装技能构建。</p></div>
+        <div class="card"><div class="ic">✅</div><h4>Verification Agent</h4><p>跑测试与验收检查，失败就要求修正并给证据。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- orchestration -->
+  <section>
+    <div class="wrap reveal">
+      <div class="eyebrow">技能编排</div>
+      <h2 class="sec-title">不重造轮子，复用你已装的技能</h2>
+      <p class="sec-desc">产出文件前先读对应技能，再通过它构建。这就是 Fable 5「产出前先读 SKILL.md」的做法。</p>
+      <div class="orch">
+        <div class="orch-row"><span class="when">要做 PPT / 演示</span><span class="arrow">→</span><span class="tool">pptx</span></div>
+        <div class="orch-row"><span class="when">要做 Word 文档</span><span class="arrow">→</span><span class="tool">docx</span></div>
+        <div class="orch-row"><span class="when">要做表格 / 清洗数据</span><span class="arrow">→</span><span class="tool">xlsx</span></div>
+        <div class="orch-row"><span class="when">要创建 / 填写 PDF</span><span class="arrow">→</span><span class="tool">pdf</span></div>
+        <div class="orch-row"><span class="when">要做网页 / 组件 / 应用</span><span class="arrow">→</span><span class="tool">frontend-design</span></div>
+        <div class="orch-row"><span class="when">领域任务（写作 / 配图 / 文献）</span><span class="arrow">→</span><span class="tool">对应领域技能</span></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="eyebrow">开始使用</div>
+      <h2 class="sec-title" style="margin-bottom:8px;">给方向，不当 PM</h2>
+      <div class="code-block">目标：我想做一个帮助我学习的工具。
+设计方向：轻量、中文、像每日行动清单一样直接。
+约束边界：不联网、不用付费 API、不读隐私文件，先做本地 demo。</div>
+      <p class="foot-note">anyone-can-product-manager · 一个把普通人从反复指令里解放出来的 Claude Code 技能</p>
+    </div>
+  </footer>
+
+<script>
+  // ---- chip selection ----
+  const dirChips = document.querySelectorAll('#dir-chips .chip');
+  const conChips = document.querySelectorAll('#con-chips .chip');
+  let dir = '';
+  const cons = new Set();
+
+  dirChips.forEach(c => c.addEventListener('click', () => {
+    dirChips.forEach(x => x.classList.remove('on'));
+    c.classList.add('on');
+    dir = c.dataset.dir;
+  }));
+  conChips.forEach(c => c.addEventListener('click', () => {
+    c.classList.toggle('on');
+    if (c.classList.contains('on')) cons.add(c.dataset.con); else cons.delete(c.dataset.con);
+  }));
+
+  // ---- deliverable inference ----
+  function inferDeliverable(goal) {
+    const g = goal.toLowerCase();
+    const has = (...ks) => ks.some(k => goal.includes(k) || g.includes(k));
+    if (has('游戏', 'game')) return { form: '可玩的单页网页游戏（本地 HTML/CSS/JS）', checks: '能打开、能操作、分数或状态变化、可截图验证' };
+    if (has('网站', '页面', '官网', 'landing', '主页')) return { form: '响应式单页网站（自包含 HTML）', checks: '首屏可读、移动端正常、关键链接可点' };
+    if (has('表格', '统计', 'excel', '数据')) return { form: '结构化表格（xlsx，公式可用）', checks: '列齐全、公式正确、可二次编辑' };
+    if (has('ppt', '幻灯', '演示', '汇报')) return { form: '演示文稿（pptx，按故事线组织）', checks: '叙事清晰、无文字溢出、图表可读' };
+    if (has('报告', '文档', '说明', '方案')) return { form: '可下载文档（Markdown / docx）', checks: '结构完整、论点清楚、可直接交付' };
+    if (has('工具', '助手', '追踪', '清单', '记录')) return { form: '带持久化的本地小工具（artifact）', checks: '能增删改查、刷新后数据仍在、空状态友好' };
+    return { form: '可运行的本地原型（自包含、无外部依赖）', checks: '能跑通主流程、给出可观测证据、达到验收' };
+  }
+
+  // ---- generate ----
+  const genBtn = document.getElementById('genBtn');
+  const chTitle = document.getElementById('ch-title');
+  const chBody = document.getElementById('ch-body');
+  const chLoop = document.getElementById('ch-loop');
+
+  function esc(s){ return s.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+  function row(k, v, empty){ return `<div class="crow"><div class="k">${k}</div><div class="v${empty?' empty':''}">${v}</div></div>`; }
+
+  genBtn.addEventListener('click', () => {
+    const goal = document.getElementById('goal').value.trim() || '（请在上方写下你的目标）';
+    const d = inferDeliverable(goal);
+    const conList = cons.size ? [...cons].join(' · ') : '未划定 — 主 Agent 会就此追问一次';
+    const dirText = dir || '未选择 — 主 Agent 会就此追问一次';
+
+    chTitle.textContent = goal.length > 22 ? goal.slice(0, 22) + '…' : goal;
+    chBody.innerHTML =
+      row('Goal 目标', esc(goal)) +
+      row('Design Direction 设计方向', esc(dirText), !dir) +
+      row('Constraint Boundary 约束边界', esc(conList), !cons.size) +
+      row('Deliverable 交付物', esc(d.form)) +
+      row('Success Checks 验收', esc(d.checks)) +
+      row('Autonomy 自主边界', '宪章设定后停止例行审批，命中升级触发器才找你');
+
+    // run the loop animation
+    const nodes = ['Goal','Charter','Split','Build','Verify','Deliver'];
+    chLoop.style.display = 'flex';
+    chLoop.innerHTML = nodes.map(n => `<span class="loop-node">${n}</span>`).join('');
+    const els = chLoop.querySelectorAll('.loop-node');
+    els.forEach((el, i) => setTimeout(() => el.classList.add('lit'), 160 * (i + 1)));
+    setTimeout(() => els.forEach(el => { if (el.textContent !== 'Deliver') el.classList.remove('lit'); }), 160 * (nodes.length + 2));
+
+    genBtn.textContent = '✓ 已生成 — 调一下方向再来一次';
+    setTimeout(() => genBtn.textContent = '⚡ 重新生成 Product Charter', 1800);
+  });
+
+  // ---- scroll reveal ----
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

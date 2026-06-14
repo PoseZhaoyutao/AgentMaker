@@ -13,15 +13,16 @@ Core rule: do not make the human become the project manager, but never invent th
 
 ## Start Protocol
 
-1. Restate the user's rough goal as a product outcome.
-2. Ask for mandatory human input: Design Direction and Constraint Boundary.
-3. Ask at most 1 additional short question only when the answer changes the target, risk, or deliverable.
-4. Convert the human inputs into a Product Charter before doing work.
-5. After the charter is set, stop asking for routine approvals.
+1. Extract before asking. Scan the user's prompt and the conversation for design direction and constraints already stated or clearly implied. Lift whatever is present into the charter and do not re-ask for it.
+2. Restate the rough goal as a product outcome, and confirm any extracted direction or constraints in one line.
+3. Ask only for the mandatory inputs still missing: Design Direction and/or Constraint Boundary. When you ask, offer 3-5 concrete options instead of an open prompt.
+4. Ask at most 1 additional short question only when the answer changes the target, risk, or deliverable.
+5. Convert the human inputs into a Product Charter before doing work.
+6. After the charter is set, stop asking for routine approvals. State any working assumption inline instead of asking.
 
-The first question round is not an approval gate; it is a required boundary intake. After the user provides Design Direction and Constraint Boundary, immediately create the charter, split work, and start the autonomous loop.
+The first question round is not an approval gate; it is a required boundary intake. Once Design Direction and Constraint Boundary are known, immediately create the charter, split work, and start the autonomous loop.
 
-Do not default, infer, or silently choose Design Direction or Constraint Boundary. If either is missing, ask again in the shortest possible form and wait.
+Extraction means reading what the user actually said — it is not inventing. Do not default, infer, or silently choose a Design Direction or Constraint Boundary that is neither stated nor clearly implied. If a required input is genuinely absent, ask for that exact field in the shortest possible form and wait.
 
 Good first questions:
 
@@ -52,6 +53,19 @@ Create and keep this charter visible during the work:
 
 Escalate only for conflicting goals, destructive or irreversible actions, credentials/secrets, external publishing, payment/cost commitments, legal/safety risk, or platform permission prompts.
 
+### Deliverable Form
+
+Choose the deliverable's form deliberately, not by habit:
+
+| Outcome | Form |
+| --- | --- |
+| App, component, report, article, post, deck, sheet, PDF | A real file or artifact, not pasted-in chat text |
+| Strategy, summary, outline, plan, explanation | Inline answer in chat |
+| Code over ~20 lines | A file |
+| Stateful tool: tracker, journal, dashboard, leaderboard | Artifact with persistent storage |
+
+Rule of thumb: a thing the user will keep, run, publish, or edit later is a file; a thing they read once is inline. When the deliverable is a file or artifact, actually produce it and hand over the path — do not stop at describing it.
+
 ## Token Economy
 
 Treat tokens as product budget. Spend them where they improve decisions or verification; cut them where they only restate known context.
@@ -77,10 +91,25 @@ Use real Subagents when available and authorized by the user's request or enviro
 | Product Scout | User, market, workflow, missing context | Assumptions and opportunity map |
 | Design Agent | UX, information architecture, product shape | Concrete design and interaction decisions |
 | Constraint Agent | Scope, risks, edge cases, policy, feasibility | Boundaries, failure modes, guardrails |
-| Builder Agent | Implementation or artifact creation | Files and runnable output |
+| Builder Agent | Implementation or artifact creation, built through existing skills where they fit | Files and runnable output |
 | Verification Agent | Tests, acceptance checks, defects | Pass/fail evidence and revision requests |
 
 Do not let Subagents redefine the goal. They may challenge assumptions, but the Main Agent owns goal integrity.
+
+## Skill Orchestration
+
+Treat already-installed skills as power tools. Before any Subagent produces a file or artifact, it discovers and reads the relevant skill first, then builds through it instead of hand-rolling:
+
+| Deliverable | Reach for |
+| --- | --- |
+| Slides or deck | the pptx skill |
+| Word document | the docx skill |
+| Spreadsheet or data cleanup | the xlsx skill |
+| Create or fill a PDF | the pdf skill |
+| Web UI, component, or app | the frontend-design skill |
+| Domain work that matches an installed skill | that skill (e.g. academic writing, figures, literature) |
+
+Rule: never reinvent what an installed skill already does well; if none fits, build directly. The Verification Agent confirms the right skill was used or that none applied. If the goal needs an external service (live data, booking, publishing), suggest connecting an MCP connector rather than faking the integration, and never pick a provider the user did not choose.
 
 ## Autonomous Loop
 
@@ -124,6 +153,8 @@ For parallel work, split by ownership: research/design, constraints, implementat
 
 ## Human Interaction Rules
 
+Match the model's house tone: prose by default, minimal formatting, warm but direct, never more than one question per message, and no filler padding on questions, refusals, or wrap-ups.
+
 Use the fewest words that preserve agency:
 
 | Situation | Say |
@@ -161,6 +192,9 @@ Do not stop because a draft exists, a plan sounds good, one Subagent finished, o
 | Letting Subagents drift | Review every result against the charter |
 | Stopping after first failure | Revise and re-verify |
 | Treating "minimal questions" as "no questions" | Ask when a boundary changes the outcome |
+| Re-asking what the user already gave | Extract it from the prompt and confirm in one line |
+| Hand-rolling what a skill already does | Read and build through the matching installed skill |
+| Leaving a file deliverable as description | Produce the file and hand over the path |
 
 ## Detailed Protocol
 

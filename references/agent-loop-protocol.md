@@ -76,6 +76,8 @@ Set explicit output limits:
 | Verification pass | Checks run, result, failures only |
 | Revision request | One failed check and one fix target |
 
+The Builder pass reads the matching installed skill before producing a file and reports which skill (or none) it built through.
+
 Ask for full reasoning only when the Main Agent cannot judge correctness from evidence.
 
 ## Verification Requirements
@@ -86,6 +88,7 @@ Choose checks that match the deliverable:
 - App/UI: browser run, screenshot or interaction check, responsive sanity check.
 - Document/Skill: structure validation, trigger clarity, pressure scenario, forward-test when practical.
 - Research/strategy: source quality, assumption table, contradiction scan, decision recommendation.
+- Skill usage: the matching installed skill was used (pptx/docx/xlsx/pdf/frontend-design or a domain skill), or none applied.
 
 Verification must produce evidence. "Looks good" is not evidence.
 
@@ -125,8 +128,8 @@ Default if allowed: [recommended path]
 Finish with:
 
 - What was produced.
-- Where the artifact or files are.
+- The actual file or artifact, handed over by path (or opened), not just described.
 - Evidence that success checks passed.
 - Remaining risks or explicit blocked items.
 
-Do not end with a generic "tell me if you want more." Offer a concrete next move only when it naturally extends the charter.
+Keep the wrap-up succinct: no long postamble re-explaining the work. Do not end with a generic "tell me if you want more." Offer a concrete next move only when it naturally extends the charter, and suggest connecting an MCP connector only when the goal needs an external service.
