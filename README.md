@@ -30,7 +30,7 @@
         → 子 Agent 分工 → 主 Agent 审查 → 验证 → 修正 → 可交付产物
 ```
 
-![用本 Skill 生成小游戏产品 demo 的截图](assets/demo-mini-game.png)
+![交互式展示页（Charter 生成器）界面](assets/demo-showcase.png)
 
 ## 在线 Demo
 
@@ -38,8 +38,7 @@
 
 | Demo | 说明 | 文件 |
 | --- | --- | --- |
-| 🎛️ 交互式展示页 | 内置 **Charter 生成器**：一句话目标 → 实时生成产品宪章 + 点亮交付循环 | [`examples/showcase/index.html`](examples/showcase/index.html) |
-| 🎮 一句话小游戏 | 技能产出的真实交付物示例：60 秒可玩的浏览器小游戏 | [`examples/mini-game/index.html`](examples/mini-game/index.html) |
+| 🎛️ 交互式展示页 | 内置 **Charter 生成器**：一句话目标 → 实时生成产品宪章 + 点亮交付循环，并展示团队分工、交付循环与技能编排 | [`examples/showcase/index.html`](examples/showcase/index.html) |
 
 > 用浏览器直接打开任一文件即可，无需联网、无需安装任何依赖。
 
@@ -106,7 +105,7 @@ Skill 会把它收敛成：
 | Constraint Rule | 本地 HTML/CSS/JS，无依赖、无联网、无发布 |
 | Verification | 能打开、能移动、分数变化、倒计时存在、截图可验证 |
 
-成品见 [`examples/mini-game/index.html`](examples/mini-game/index.html)。
+在展示页的 Charter 生成器里可以亲手跑这个例子：[`examples/showcase/index.html`](examples/showcase/index.html)。
 
 ## 为什么它适合「普通人做产品经理」
 
@@ -127,10 +126,9 @@ Skill 会把它收敛成：
 ├── references/
 │   └── agent-loop-protocol.md    # 多 Agent / 多轮迭代的详细协议
 ├── examples/
-│   ├── showcase/index.html       # 交互式展示页（Charter 生成器）
-│   └── mini-game/index.html      # 真实交付物示例
+│   └── showcase/index.html       # 交互式展示页（Charter 生成器）
 └── assets/
-    └── demo-mini-game.png
+    └── demo-showcase.png
 ```
 
 ## 在 Claude Code 中安装
