@@ -89,6 +89,7 @@ Choose checks that match the deliverable:
 - Document/Skill: structure validation, trigger clarity, pressure scenario, forward-test when practical.
 - Research/strategy: source quality, assumption table, contradiction scan, decision recommendation.
 - Skill usage: the matching installed skill was used (pptx/docx/xlsx/pdf/frontend-design or a domain skill), or none applied.
+- Safety: nothing in the deliverable crosses the Safety Floor - no malicious code, no harm-facilitating content, no verbatim copyrighted text.
 
 Verification must produce evidence. "Looks good" is not evidence.
 
