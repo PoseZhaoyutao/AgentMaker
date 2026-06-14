@@ -131,18 +131,62 @@ Skill 会把它收敛成：
     └── demo-showcase.png
 ```
 
-## 在 Claude Code 中安装
+## 安装到各类 Agent
 
-把技能复制到个人技能目录即可被 Claude 发现：
+本技能遵循 [agentskills.io](https://agentskills.io) 通用规范——一个以技能名命名的文件夹，内含带 `name` / `description` 前言的 `SKILL.md`。**安装 = 把这个文件夹放进对应 Agent 的 skills 目录，然后重启 / 新开会话让它重新发现技能。**
+
+先把仓库拉到本地，下面所有命令都在仓库根目录执行：
+
+```bash
+git clone https://github.com/PoseZhaoyutao/AgentMaker.git
+cd AgentMaker
+```
+
+### Claude Code
+
+技能目录：`~/.claude/skills/`
 
 ```powershell
+# Windows · PowerShell
 $dst = "$env:USERPROFILE\.claude\skills\anyone-can-product-manager"
 New-Item -ItemType Directory -Force $dst | Out-Null
 Copy-Item SKILL.md, README.md $dst -Force
 Copy-Item references, examples, assets $dst -Recurse -Force
 ```
 
-安装后，在 Claude Code 里描述一个粗略目标即可触发；也可以显式调用 `anyone-can-product-manager`。
+```bash
+# macOS / Linux
+mkdir -p ~/.claude/skills/anyone-can-product-manager
+cp -r SKILL.md README.md references examples assets ~/.claude/skills/anyone-can-product-manager/
+```
+
+### Codex
+
+技能目录：`~/.codex/skills/`。结构相同，额外带上 `agents/ai.yaml` 可提供中文显示名「普通人也能做产品经理」。
+
+```powershell
+# Windows · PowerShell
+$dst = "$env:USERPROFILE\.codex\skills\anyone-can-product-manager"
+New-Item -ItemType Directory -Force $dst | Out-Null
+Copy-Item SKILL.md, README.md $dst -Force
+Copy-Item references, examples, assets, agents $dst -Recurse -Force
+```
+
+```bash
+# macOS / Linux
+mkdir -p ~/.codex/skills/anyone-can-product-manager
+cp -r SKILL.md README.md references examples assets agents ~/.codex/skills/anyone-can-product-manager/
+```
+
+### 其他 Agent（Copilot CLI、Gemini CLI 等）
+
+只要 Agent 支持 agentskills.io 规范，做法一致：把整个技能文件夹放进它的 skills 目录，重启 Agent。
+
+- **GitHub Copilot CLI** —— 从已安装的插件中自动发现技能；把技能放进你的 Copilot 插件所暴露的 skills 目录即可。
+- **Gemini CLI** —— 会话开始时加载技能元数据，再通过 `activate_skill` 激活。
+- **任意兼容 Agent** —— 找到它的「skills / 技能」目录，把 `anyone-can-product-manager/` 整个拷进去。SKILL.md 的前言是跨平台通用的。
+
+安装后，在对应 Agent 里描述一个粗略目标即可触发；也可以显式调用 `anyone-can-product-manager`。
 
 ## 使用方式
 
